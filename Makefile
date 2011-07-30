@@ -9,7 +9,7 @@ pkgres=build_pkg/pkgres
 dist=build_pkg/dstroot
 packagemaker=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker
 
-BUILDOPS=-buildstyle Deployment
+BUILDOPS=-configuration Deployment
 
 .PHONY: clean all dstroot pkgres contacts test install uninstall
 
