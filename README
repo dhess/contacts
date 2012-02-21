@@ -12,7 +12,7 @@ With version 1.1, contacts is now installed in /usr/bin instead of /usr/local/bi
 Without further ado, here are a few examples:
 
 $ contacts -h
-usage: contacts [-hHsmnlS] [-f format] [search]
+usage: contacts [-hHsmnlS] [-c|-f format] [search]
       -h displays help (this)
       -H suppress header
       -s sort list
@@ -20,6 +20,7 @@ usage: contacts [-hHsmnlS] [-f format] [search]
       -n displays note below each record
       -l loose formatting (doesn't truncate record values)
       -S strict formatting (doesn't add space between columns)
+      -c output as calendar(1) file format
       -f accepts a format string (see man page)
 
 displays contacts from the AddressBook database

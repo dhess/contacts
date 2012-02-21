@@ -14,8 +14,8 @@
 .Nd displays contacts from the AddressBook database
 .Sh SYNOPSIS             \" Section Header - required - don't modify
 .Nm
-.Op Fl hHsnmlS             \" [-abcd]
-.Op Fl f Ar format         \" [-a path] 
+.Op Fl hHsnmlS            \" [-abcd]
+.Op Fl c | Fl f Ar format         \" [-a path] 
 .Op Ar search              \" [file]
 .Sh DESCRIPTION          \" Section Header - required - don't modify
 The utility contacts affords easy access to information in the
@@ -41,6 +41,8 @@ see entire note include the -l option)
 loose formatting - doesn't truncate the record values to align columns
 .It Fl S
 strict formatting - doesn't add space between the columns
+.It Fl c
+output as calendar(1) file format
 .It Fl f
 accepts a format string (see below)
 .El                      \" Ends the list
@@ -97,6 +99,8 @@ group
 webpage/homepage
 .It %b               \" Each item preceded by .It macro
 birthday
+.It %bb               \" Each item preceded by .It macro
+birthday (Only month/date)
 .It %i               \" Each item preceded by .It macro
 instant messanger name (order of preference: aim, yahoo, jabber, icq, msn)
 .It %ai               \" Each item preceded by .It macro

@@ -66,13 +66,27 @@ NSString *getStringForLabel(ABPerson *person,
 }
 
 /*
+ * Returns a string value for a date-property 
+ * NSCalendarDate seems to be obsolete now ...
+*/
+NSString *getDateForLabel(ABPerson *person,
+                               NSString *property,
+                               NSString *label) {
+    NSCalendarDate *value;
+    value = (NSCalendarDate *) getValueForLabel(person, property, label);
+    if (value == nil)
+      return @"99/99";
+    return [value descriptionWithCalendarFormat:@"%m/%d"];
+}
+
+/*
   Parses the format string for FormatHelper tokens.
 */
 NSArray *getFormatHelpers(NSString *format) {
     NSMutableArray *array = [NSMutableArray array];
     char *str;
     
-    for(str = (char *) [format cString]; *str != NULL; str++) {
+    for(str = (char *) [format UTF8String]; *str != NULL; str++) {
         if (str[0] == '%') {
             if (str[1] != NULL) {
                 // skip double percents
@@ -86,7 +100,7 @@ NSArray *getFormatHelpers(NSString *format) {
                 NSString *token = nil;
                 if (str[2] != NULL && (str[2] == 'e' || str[2] == 'p' 
                                        || str[2] == 'n' || str[2] == 'i' 
-                                       || str[2] == 'a')) {
+                                       || str[2] == 'a' || str[2] == 'b')) {
                     token = [NSString stringWithFormat: @"%%%c%c", 
                                       str[1], str[2]];
                     str++;
@@ -100,7 +114,7 @@ NSArray *getFormatHelpers(NSString *format) {
                                            initWithFormatToken: token];
                 if ([helper headerName] == nil) 
                     fprintf(stderr, "warning: invalid format token given \"%s\"\n",
-                            [token cString]);
+                            [token UTF8String]);
                 else
                     [array addObject: helper];
 
@@ -280,7 +294,12 @@ NSArray *getFormatHelpers(NSString *format) {
     case 'w':
         return @"HOMEPAGE";
     case 'b':
-        return @"BIRTHDAY";
+        switch (subtype) {
+        case 'b':
+          return @"BIRTHDAY";
+        default:
+          return @"BIRTHDAY";
+        }
     case 'i':
         switch (subtype) {
         case 'a':
@@ -435,10 +454,17 @@ NSArray *getFormatHelpers(NSString *format) {
         return getStringForLabel(person, 
                                 kABHomePageProperty,
                                 nil);
-    case 'b':
-        return [getStringForLabel(person, 
-                                 kABBirthdayProperty,
-                                 nil) description];
+    case 'b': 
+        switch (subtype) {
+        case 'b':
+            return getDateForLabel(person, 
+                                   kABBirthdayProperty,
+                                   nil);
+        default:
+            return [getStringForLabel(person, 
+                                   kABBirthdayProperty,
+                                   nil) description];
+        }
     case 'i':
         switch (subtype) {
         case 'a':
@@ -492,6 +518,7 @@ NSArray *getFormatHelpers(NSString *format) {
         return [NSString stringWithFormat: @"\nNOTE: %@", scratch];
     }
     return nil;
+
 }
 
 /*
