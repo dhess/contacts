@@ -44,6 +44,8 @@
  * %g   group
  * %w   homepage/webpage
  *
+ * %b   birthday (full NSCalendarDate description)
+ * %bb  birthday (mm/dd)
  * %i   instant messaging
  * %ai  aim IM
  * %yi  Yahoo IM
@@ -79,6 +81,7 @@ int peopleSort(id peep1, id peep2, void *context);
 
 // members
 BOOL show_headers = YES;
+BOOL only_birthdays = NO;
 BOOL sort = NO;
 
 // These are declared in FormatHelper.m
@@ -90,7 +93,7 @@ extern BOOL firstname_first;
   Prints usage and returns an error code of 2.
 */
 int usage() {
-    fprintf(stderr, "usage: contacts [-hHsmnlS] [-f format] [search]\n");
+    fprintf(stderr, "usage: contacts [-hHsmnlS] [-c|-f format] [search]\n");
     // I don't know if I should make it a full-fledged client.
 
     //fprintf(stderr, "       contacts -a first-name last-name phone-number\n");
@@ -102,6 +105,7 @@ int usage() {
     fprintf(stderr, "      -n displays note below each record\n");
     fprintf(stderr, "      -l loose formatting (doesn't truncate record values)\n");
     fprintf(stderr, "      -S strict formatting (doesn't add space between columns)\n");
+    fprintf(stderr, "      -c output as calendar(1) file format\n");
     fprintf(stderr, "      -f accepts a format string (see man page)\n");
     fprintf(stderr, "\n");
     fprintf(stderr, "displays contacts from the AddressBook database\n");
@@ -118,13 +122,19 @@ int main (int argc, char * argv[]) {
     char ch;
     NSString *format = @"%n %p %i %e";
 
-    while ((ch = getopt(argc, argv, "lSHsnmhf:")) != -1)
+    while ((ch = getopt(argc, argv, "lSHsnmhcf:")) != -1)
         switch (ch) {
         case 'l':
             loose = YES;
             break;
         case 'f':
             format = [NSString stringWithCString: optarg];
+            break;
+        case 'c':
+            show_headers = NO;
+            strict = YES;
+            format = @"%bb\t%n"; 
+            only_birthdays = YES;
             break;
         case 'H':
             show_headers = NO;
@@ -241,7 +251,7 @@ int main (int argc, char * argv[]) {
         
         peopleFound = [AB recordsMatchingSearchElement: criteria];
     }
-
+    
     printPeopleWithFormat(peopleFound, format);
 
     [pool release];
@@ -301,14 +311,17 @@ void printPeopleWithFormat(NSArray *people,
     
     while((person = [peopleEnum nextObject]) != nil) {
         
-        formatEnumerator = [formatters objectEnumerator];
+        if ( !only_birthdays || [person valueForProperty:kABBirthdayProperty] != nil ) {
+      
+          formatEnumerator = [formatters objectEnumerator];
 
-        while((formatter = [formatEnumerator nextObject]) != nil) {
+          while((formatter = [formatEnumerator nextObject]) != nil) {
             
             printf([[formatter printfToken] cString], 
                    [[formatter valueForPerson: person] lossyCString]);
+          }
+          printf("\n");
         }
-        printf("\n");
     }
 }
 

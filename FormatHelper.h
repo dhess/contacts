@@ -8,6 +8,9 @@
 #import <Foundation/Foundation.h>
 #import <AddressBook/AddressBook.h>
 
+NSString *getDateForLabel(ABPerson *person,
+                               NSString *property,
+                               NSString *label);
 NSArray *getFormatHelpers(NSString *format);
 
 @interface FormatHelper : NSObject {
