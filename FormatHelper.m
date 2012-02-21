@@ -86,7 +86,7 @@ NSArray *getFormatHelpers(NSString *format) {
     NSMutableArray *array = [NSMutableArray array];
     char *str;
     
-    for(str = (char *) [format cString]; *str != NULL; str++) {
+    for(str = (char *) [format UTF8String]; *str != NULL; str++) {
         if (str[0] == '%') {
             if (str[1] != NULL) {
                 // skip double percents
@@ -114,7 +114,7 @@ NSArray *getFormatHelpers(NSString *format) {
                                            initWithFormatToken: token];
                 if ([helper headerName] == nil) 
                     fprintf(stderr, "warning: invalid format token given \"%s\"\n",
-                            [token cString]);
+                            [token UTF8String]);
                 else
                     [array addObject: helper];
 
