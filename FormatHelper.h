@@ -8,6 +8,20 @@
 #import <Foundation/Foundation.h>
 #import <AddressBook/AddressBook.h>
 
+BOOL isNullString(NSString* string);
+
+id getValueForLabel(ABPerson *person,
+	                    NSString *property,
+	                    NSString *label);
+
+NSString *getStringForLabel(ABPerson *person,
+	                           NSString *property,
+	                           NSString *label);
+
+NSString *getDateForLabel(ABPerson *person,
+                               NSString *property,
+                               NSString *label);
+
 NSArray *getFormatHelpers(NSString *format);
 
 @interface FormatHelper : NSObject {
